@@ -1,0 +1,212 @@
+---
+title: "OKC Thunder Data Science Internship"
+author: "Akshay Kirit Kalavadia"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(DT)
+library(rio)
+```
+<BR>
+<BR>
+<BR>
+<B>
+<FONT SIZE=4, COLOR = "#A11515">
+INTRODUCTION AND DATA EXPLORATION
+</FONT>
+</B>
+<P>
+<BR>
+<FONT SIZE=4> <B>eFG: Effective Fiel Goal</B></FONT>
+<P>
+<B>Definition:</B> A field goal percentage that is adjusted for made 3 pointers being 1.5 times more valuable than a 2 point shot<BR>
+<B>Formula:</B> ((FGM + (0.5 * 3PM))/FGA
+```{r}
+shots_data <- read.csv("shots_data.csv")
+head(shots_data)
+summary(shots_data)
+str(shots_data)
+```
+<P>
+<P>
+Since we want to analyse data of Team-A and Team-B individually, I have created new data frame with individual data of both teams.
+
+<BR>
+<FONT SIZE=4, COLOR = "darkblue">
+<B>Team-A</B></FONT><BR>
+<P>
+```{r}
+Team_A_shots <- shots_data %>% filter(team == "Team A")
+head(Team_A_shots)
+```
+<P>
+<BR>
+<FONT SIZE=4, COLOR = "darkblue">
+<B>Team-B</B></FONT><BR>
+<P>
+```{r}
+Team_B_shots <- shots_data %>% filter(team == "Team B")
+head(Team_B_shots)
+```
+<BR>
+<B>
+<FONT SIZE=4, COLOR = "#A11515">
+ANALYSIS
+</FONT></B>
+<BR>
+<BR>
+<FONT SIZE=4, COLOR = "darkgreen">
+<B>Team-A Shot Analysis</B></FONT><BR>
+<P>
+<BR>
+<B> 2 Point Zone </B>
+
+```{r}
+shots_2P_Team_A <- Team_A_shots %>%filter((x <= 22 & y<= 7.8)  & (x >= -22 & y <= 7.8) | ((x <= 23.75 & y > 7.8) & (x>= -23.75 & y > 7.8)))
+Total_2P_Team_A_attempts <- nrow(shots_2P_Team_A)
+Total_2P_Team_A_attempts
+```
+```{r}
+shots_2P_Team_A_percentage = Total_2P_Team_A_attempts/nrow(Team_A_shots) * 100
+shots_2P_Team_A_percentage
+```
+```{r}
+Shots_2P_Team_A_converted<-sum(shots_2P_Team_A$fgmade)
+Shots_2P_Team_A_converted
+```
+
+```{r}
+shots_2P_Team_A_eFG = Shots_2P_Team_A_converted / Total_2P_Team_A_attempts * 100
+shots_2P_Team_A_eFG
+```
+<P>
+<BR>
+<B> Non Corner 3 </B>
+```{r}
+shots_NC3_Team_A <- Team_A_shots %>%filter((x >= 23.75 & y > 7.8) | (x<= -23.75 & y > 7.8))
+Total_NC3_Team_A_attempts <- nrow(shots_NC3_Team_A)
+Total_NC3_Team_A_attempts
+```
+```{r}
+shots_NC3_Team_A_percentage = Total_NC3_Team_A_attempts/nrow(Team_A_shots) * 100
+shots_NC3_Team_A_percentage
+```
+```{r}
+Shots_NC3_Team_A_converted<-sum(shots_NC3_Team_A$fgmade)
+Shots_NC3_Team_A_converted
+```
+
+```{r}
+shots_NC3_Team_A_eFG = 0
+shots_NC3_Team_A_eFG
+```
+<P>
+<BR>
+<B> Corner 3 </B>
+```{r}
+shots_C3_Team_A <- Team_A_shots %>%filter((x >= 22 & y <= 7.8) | (x <= -22 & y <= 7.8))
+Total_C3_Team_A_attempts <- nrow(shots_C3_Team_A)
+Total_C3_Team_A_attempts
+```
+```{r}
+shots_C3_Team_A_percentage = Total_C3_Team_A_attempts/nrow(Team_A_shots) * 100
+shots_C3_Team_A_percentage
+```
+```{r}
+Shots_C3_Team_A_converted<-sum(shots_C3_Team_A$fgmade)
+Shots_C3_Team_A_converted
+```
+```{r}
+shots_C3_Team_A_eFG = (Shots_C3_Team_A_converted + (0.5 * Shots_C3_Team_A_converted)) / Total_C3_Team_A_attempts * 100
+shots_C3_Team_A_eFG
+```
+<BR>
+<BR>
+<FONT SIZE=4, COLOR = "darkgreen">
+<B>Team-B Shot Analysis</B></FONT><BR>
+<P>
+<BR>
+<B> 2 Point Zone </B>
+
+```{r}
+shots_2P_Team_B <- Team_B_shots %>%filter((x <= 22 & y<= 7.8)  & (x >= -22 & y <= 7.8) | ((x <= 23.75 & y > 7.8) & (x>= -23.75 & y > 7.8)))
+Total_2P_Team_B_attempts <- nrow(shots_2P_Team_B)
+Total_2P_Team_B_attempts
+```
+
+```{r}
+shots_2P_Team_B_percentage = Total_2P_Team_B_attempts/nrow(Team_B_shots) * 100
+shots_2P_Team_B_percentage
+```
+```{r}
+Shots_2P_Team_B_converted<-sum(shots_2P_Team_B$fgmade)
+Shots_2P_Team_B_converted
+```
+
+```{r}
+shots_2P_Team_B_eFG = Shots_2P_Team_B_converted / Total_2P_Team_B_attempts * 100
+shots_2P_Team_B_eFG
+```
+<P>
+<BR>
+<B> Non Corner 3 </B>
+```{r}
+shots_NC3_Team_B <- Team_B_shots %>%filter((x >= 23.75 & y > 7.8) | (x<= -23.75 & y > 7.8))
+Total_NC3_Team_B_attempts <- nrow(shots_NC3_Team_B)
+Total_NC3_Team_B_attempts
+```
+```{r}
+shots_NC3_Team_B_percentage = Total_NC3_Team_B_attempts/nrow(Team_B_shots) * 100
+shots_NC3_Team_B_percentage
+```
+```{r}
+Shots_NC3_Team_B_converted<-sum(shots_NC3_Team_B$fgmade)
+Shots_NC3_Team_B_converted
+```
+
+```{r}
+shots_NC3_Team_B_eFG = 0
+shots_NC3_Team_B_eFG
+```
+<P>
+<BR>
+<B> Corner 3 </B>
+```{r}
+shots_C3_Team_B <- Team_B_shots %>%filter((x >= 22 & y <= 7.8) | (x <= -22 & y <= 7.8))
+Total_C3_Team_B_attempts <- nrow(shots_C3_Team_B)
+Total_C3_Team_B_attempts
+```
+```{r}
+shots_C3_Team_B_percentage = Total_C3_Team_B_attempts/nrow(Team_B_shots) * 100
+shots_C3_Team_B_percentage
+```
+```{r}
+Shots_C3_Team_B_converted<-sum(shots_C3_Team_B$fgmade)
+Shots_C3_Team_B_converted
+```
+```{r}
+shots_C3_Team_B_eFG = (Shots_C3_Team_B_converted + (0.5 * Shots_C3_Team_B_converted)) / Total_C3_Team_B_attempts * 100
+shots_C3_Team_B_eFG
+
+((5 + (0.5*5)) / Total_C3_Team_B_attempts) * 100 
+```
+
+```{r}
+Summary_Team_A <- data.frame(
+                       Shot_Zone = c("2PT", "NC3", "C3"),
+                       Shot_Distribution = c(round(shots_2P_Team_A_percentage,3), round(shots_NC3_Team_A_percentage,3), round(shots_C3_Team_A_percentage,3)),
+                      eFG = c(round(shots_2P_Team_A_eFG,3), round(shots_NC3_Team_A_eFG,3), round(shots_C3_Team_A_eFG,3)))
+datatable(Summary_Team_A,options = list(paging = F))
+```
+
+```{r}
+Summary_Team_B <- data.frame(
+                       Shot_Zone = c("2PT", "NC3", "C3"),
+                       Shot_Distribution = c(round(shots_2P_Team_B_percentage,3), round(shots_NC3_Team_B_percentage,3), round(shots_C3_Team_B_percentage,3)),
+                      eFG = c(round(shots_2P_Team_B_eFG,3), round(shots_NC3_Team_B_eFG,3), round(shots_C3_Team_B_eFG,3)))
+datatable(Summary_Team_B,options = list(paging = F))
+```
